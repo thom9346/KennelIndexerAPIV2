@@ -11,7 +11,6 @@ namespace KennelIndexer.API.DbContexts
         {
 
         }
-
         public DbSet<Person> People { get; set; }
         public DbSet<Picture> Pictures { get; set; }
 
