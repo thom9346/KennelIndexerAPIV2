@@ -38,7 +38,9 @@ namespace KennelIndexer.API
             services.AddScoped<IPersonLibraryRepository, PersonLibraryRepository>();
             services.AddDbContext<PersonLibraryContext>(options =>
             {
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=KennelIndexerApiV2;Trusted_Connection=True;");
+                //(local)\sqlexpress <- laptop
+                //(localdb)\mssqllocaldb <- stationairy
+                options.UseSqlServer(@"Server=(local)\sqlexpress;Database=KennelIndexerApiV2;Trusted_Connection=True;");
             });
         }
 
