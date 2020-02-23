@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using KennelIndexer.API.Models;
 using KennelIndexer.API.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +20,8 @@ namespace KennelIndexer.API.Controllers
         private readonly IPersonLibraryRepository _personLibraryRepository;
         private readonly IMapper _mapper;
 
+        private readonly string[] ACCEPTED_FILE_TYPES = new[] { ".jpg", ".jpeg", ".png" };
+
         public PicturesController(IPersonLibraryRepository personLibraryRepository, IMapper mapper)
         {
             _personLibraryRepository = personLibraryRepository ??
@@ -25,6 +29,7 @@ namespace KennelIndexer.API.Controllers
 
             _mapper = mapper ??
                  throw new ArgumentNullException(nameof(mapper));
+
         }
         public IActionResult GetPictures(Guid personId)
         {
@@ -32,7 +37,7 @@ namespace KennelIndexer.API.Controllers
             return Ok(_mapper.Map<IEnumerable<PictureDto>>(picturesFromRepo));
         }
 
-        public object GetPicture(Guid personId, Guid pictureId)
+        public IActionResult GetPicture(Guid personId, Guid pictureId)
         {
             try
             {
@@ -50,6 +55,54 @@ namespace KennelIndexer.API.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
+        }
+
+        [HttpPost("~/api/UploadPictures")]
+        public async Task<IActionResult> UploadPictures(List<IFormFile> files, PersonForCreationDto person)
+        {
+            //var personEntity = _mapper.Map<Entities.Person>(person);
+            //var personId = personEntity.PersonId;
+
+            //if(!_personLibraryRepository.PersonExists(personId))
+            //{
+            //    _personLibraryRepository.AddPerson(personEntity);
+
+
+            //}
+            //_personLibraryRepository.AddPicture(personEntity.PersonId)
+            //var uploader = new Helpers.Uploader();
+            //var pictureUrl = await uploader.UploadPictures(files);
+
+            //return Ok(new { pictureUrl });
+            //if (!_personLibraryRepository.PersonExists(personId))
+            //{
+            //    return NotFound();
+            //}
+
+
+            long size = files.Sum(f => f.Length);
+
+            var folderName = Path.Combine("Resources", "Images");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+           
+
+            var fileName = Guid.NewGuid() + ".jpg";
+            var fullPath = Path.Combine(pathToSave, fileName);
+
+            foreach (var formFile in files)
+            {
+                if (formFile.Length > 0)
+                {
+
+                    using (var stream = System.IO.File.Create(fullPath))
+                    {
+                        await formFile.CopyToAsync(stream);
+                    }
+                }
+            }
+
+            return Ok(new { count = files.Count, size, fullPath });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using KennelIndexer.API.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace KennelIndexer.API.Services
         IEnumerable<Person> GetPeople();
         Person GetPerson(Guid personId);
         IEnumerable<Person> GetPeople(IEnumerable<Guid> personIds);
-        void AddPerson(Person person);
+        void AddPerson(Person person, List<IFormFile> files);
         void DeletePerson(Person person);
         void UpdatePerson(Person person);
         bool PersonExists(Guid personId);

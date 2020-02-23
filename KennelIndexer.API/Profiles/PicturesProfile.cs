@@ -11,6 +11,7 @@ namespace KennelIndexer.API.Profiles
         public PicturesProfile()
         {
             CreateMap<Entities.Picture, Models.PictureDto>();
+            CreateMap<Models.PictureForCreationDto, Entities.Picture>();
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using KennelIndexer.API.DbContexts;
 using KennelIndexer.API.Entities;
+using KennelIndexer.API.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,22 +17,28 @@ namespace KennelIndexer.API.Services
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public void AddPerson(Person person)
+        public void AddPerson(Person person, List<IFormFile> files)
         {
            if (person == null)
             {
                 throw new ArgumentNullException(nameof(person));
             }
 
-            person.PersonId = Guid.NewGuid();
+            person.PersonId = Guid.NewGuid(); //API is responsibile for creating new IDS.
 
-            foreach(var picture in person.Pictures)
+            var uploader = new Helpers.Uploader();
+            var pictureUri = uploader.UploadPictures(files);
+
+            foreach (var file in files)
             {
-                picture.PictureId = Guid.NewGuid();
+                //var personId = Guid.NewGuid();
+                person.Pictures = new List<Picture>() 
+                { new Picture { PersonId = person.PersonId, PictureUri = pictureUri } };
             }
+        
             _context.People.Add(person);
+         
         }
-
         public void AddPicture(Guid personId, Picture picture)
         {
             if(personId == Guid.Empty)
@@ -45,6 +53,14 @@ namespace KennelIndexer.API.Services
             //always set the pictureId to the passed-in pictureid.
             picture.PersonId = personId;
             _context.Pictures.Add(picture);
+        }
+        public void UploadPicture(Picture picture)
+        {
+            if (picture == null)
+            {
+                throw new ArgumentNullException(nameof(picture));
+            }
+
         }
 
         public void DeletePerson(Person person)
@@ -134,7 +150,6 @@ namespace KennelIndexer.API.Services
         {
             //throw new NotImplementedException();
         }
-
 
         public void Dispose()
         {

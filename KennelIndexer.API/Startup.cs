@@ -40,7 +40,7 @@ namespace KennelIndexer.API
             {
                 //(local)\sqlexpress <- laptop
                 //(localdb)\mssqllocaldb <- stationairy
-                options.UseSqlServer(@"Server=(local)\sqlexpress;Database=KennelIndexerApiV2;Trusted_Connection=True;");
+                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=KennelIndexerApiV2;Trusted_Connection=True;");
             });
         }
 
@@ -52,6 +52,12 @@ namespace KennelIndexer.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            });
             //app.UseHttpsRedirection();
 
             app.UseRouting();

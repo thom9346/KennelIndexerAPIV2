@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using BrunoZell.ModelBinding;
 using KennelIndexer.API.Models;
 using KennelIndexer.API.Services;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ namespace KennelIndexer.API.Controllers
             //we map it to the model: PersonDto asnd return it.
             return Ok(_mapper.Map<IEnumerable<PersonDto>>(peopleFromRepo));
         }
-        [HttpGet("{personId}")]
+        [HttpGet("{personId}", Name = "GetPerson")]
         public IActionResult GetPerson(Guid personId)
         {
             try
@@ -54,6 +55,21 @@ namespace KennelIndexer.API.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpPost]
+        public ActionResult<PersonDto> PostPerson(
+            [ModelBinder(BinderType = typeof(JsonModelBinder))] PersonForCreationDto person, List<IFormFile> files)
+        {
+            var personEntity = _mapper.Map<Entities.Person>(person); //Maps PersonForCreationDto to Entites.Person. This is possible because of the mapping in PeopleProfile.cs
+            _personLibraryRepositry.AddPerson(personEntity, files);
+            _personLibraryRepositry.Save();
+
+            var personToReturn = _mapper.Map<PersonDto>(personEntity);
+
+            return CreatedAtRoute("GetPerson",
+                new { personId = personToReturn.PersonId },
+                personToReturn);
         }
     }
 }
