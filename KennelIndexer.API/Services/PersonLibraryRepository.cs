@@ -19,33 +19,37 @@ namespace KennelIndexer.API.Services
         }
         public void AddPerson(Person person, List<IFormFile> files)
         {
-           if (person == null)
+            if (person == null)
             {
                 throw new ArgumentNullException(nameof(person));
             }
 
             person.PersonId = Guid.NewGuid(); //API is responsibile for creating new IDS.
 
-            var uploader = new Helpers.Uploader();
-            var pictureUri = uploader.UploadPictures(files);
-
-            foreach (var file in files)
+            if (files.Count > 0)
             {
-                //var personId = Guid.NewGuid();
-                person.Pictures = new List<Picture>() 
+                var uploader = new Helpers.Uploader();
+                var pictureUri = uploader.UploadPictures(files);
+
+                foreach (var file in files)
+                {
+                    //var personId = Guid.NewGuid();
+                    person.Pictures = new List<Picture>()
                 { new Picture { PersonId = person.PersonId, PictureUri = pictureUri } };
+
+                }
             }
-        
+
             _context.People.Add(person);
-         
+
         }
         public void AddPicture(Guid personId, Picture picture)
         {
-            if(personId == Guid.Empty)
+            if (personId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(personId));
             }
-            if(picture == null)
+            if (picture == null)
             {
                 throw new ArgumentNullException(nameof(picture));
             }
@@ -81,7 +85,7 @@ namespace KennelIndexer.API.Services
 
         public IEnumerable<Person> GetPeople(IEnumerable<Guid> personIds)
         {
-            if(personIds == null)
+            if (personIds == null)
             {
                 throw new ArgumentNullException(nameof(personIds));
             }
@@ -94,7 +98,7 @@ namespace KennelIndexer.API.Services
 
         public Person GetPerson(Guid personId)
         {
-            if(personId == Guid.Empty)
+            if (personId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(personId));
             }
@@ -103,11 +107,11 @@ namespace KennelIndexer.API.Services
         //Get specific picture from specific person
         public Picture GetPicture(Guid personId, Guid pictureId)
         {
-            if(personId == Guid.Empty)
+            if (personId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(personId));
             }
-            if(pictureId == Guid.Empty)
+            if (pictureId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(pictureId));
             }
@@ -118,7 +122,7 @@ namespace KennelIndexer.API.Services
         //get all pictures from one person
         public IEnumerable<Picture> GetPictures(Guid personId)
         {
-            if(personId == Guid.Empty)
+            if (personId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(personId));
             }
@@ -129,7 +133,7 @@ namespace KennelIndexer.API.Services
 
         public bool PersonExists(Guid personId)
         {
-            if(personId == Guid.Empty)
+            if (personId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(personId));
             }
