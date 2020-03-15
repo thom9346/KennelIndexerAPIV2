@@ -35,7 +35,7 @@ namespace KennelIndexer.API.Services
                 {
                     //var personId = Guid.NewGuid();
                     person.Pictures = new List<Picture>()
-                { new Picture { PersonId = person.PersonId, PictureUri = pictureUri } };
+                { new Picture { PersonId = person.PersonId, PictureUri = pictureUri.ToString() } };
 
                 }
             }

@@ -31,12 +31,13 @@ namespace KennelIndexer.API.Controllers
                  throw new ArgumentNullException(nameof(mapper));
 
         }
+        [HttpGet("{personId}", Name ="GetPictures")]
         public IActionResult GetPictures(Guid personId)
         {
             var picturesFromRepo = _personLibraryRepository.GetPictures(personId);
             return Ok(_mapper.Map<IEnumerable<PictureDto>>(picturesFromRepo));
         }
-
+        [HttpGet("{personId}/{pictureId}", Name = "GetPicture")]
         public IActionResult GetPicture(Guid personId, Guid pictureId)
         {
             try
