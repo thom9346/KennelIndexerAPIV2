@@ -59,7 +59,7 @@ namespace KennelIndexer.API.Controllers
 
         [HttpPost]
         public ActionResult<PersonDto> PostPerson(
-            [ModelBinder(BinderType = typeof(JsonModelBinder))] PersonForCreationDto person, List<IFormFile> files)
+            [FromForm] PersonForCreationDto person, List<IFormFile> files)
         {
             var personEntity = _mapper.Map<Entities.Person>(person); //Maps PersonForCreationDto to Entites.Person. This is possible because of the mapping in PeopleProfile.cs
             _personLibraryRepositry.AddPerson(personEntity, files);
