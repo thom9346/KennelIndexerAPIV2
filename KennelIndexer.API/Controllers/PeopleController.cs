@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -59,10 +60,34 @@ namespace KennelIndexer.API.Controllers
 
         [HttpPost]
         public ActionResult<PersonDto> PostPerson(
-            [FromForm] PersonForCreationDto person, List<IFormFile> files)
+            [FromForm] PersonForCreationDto person)
         {
+
+            var files = Request.Form.Files;
+            var dbPaths = new List<string>();
+
+            if (files.Any(f => f.Length > 0))
+            {
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+               
+
+                foreach (var file in files)
+                {
+                    var fileExtension = Path.GetExtension(files.FirstOrDefault().FileName);
+                    var fileName = Guid.NewGuid() + fileExtension;
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    dbPaths.Add(Path.Combine(folderName, fileName));
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+            }
+
             var personEntity = _mapper.Map<Entities.Person>(person); //Maps PersonForCreationDto to Entites.Person. This is possible because of the mapping in PeopleProfile.cs
-            _personLibraryRepositry.AddPerson(personEntity, files);
+            _personLibraryRepositry.AddPerson(personEntity, dbPaths);
             _personLibraryRepositry.Save();
 
             var personToReturn = _mapper.Map<PersonDto>(personEntity);

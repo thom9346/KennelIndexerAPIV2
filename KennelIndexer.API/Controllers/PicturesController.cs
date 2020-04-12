@@ -20,7 +20,6 @@ namespace KennelIndexer.API.Controllers
         private readonly IPersonLibraryRepository _personLibraryRepository;
         private readonly IMapper _mapper;
 
-        private readonly string[] ACCEPTED_FILE_TYPES = new[] { ".jpg", ".jpeg", ".png" };
 
         public PicturesController(IPersonLibraryRepository personLibraryRepository, IMapper mapper)
         {
@@ -31,7 +30,7 @@ namespace KennelIndexer.API.Controllers
                  throw new ArgumentNullException(nameof(mapper));
 
         }
-        [HttpGet("{personId}", Name ="GetPictures")]
+        [HttpGet("{personId}", Name = "GetPictures")]
         public IActionResult GetPictures(Guid personId)
         {
             var picturesFromRepo = _personLibraryRepository.GetPictures(personId);
@@ -51,59 +50,63 @@ namespace KennelIndexer.API.Controllers
                 }
                 return Ok(_mapper.Map<PictureDto>(pictureFromRepo));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
         }
-
-        [HttpPost("~/api/UploadPictures")]
-        public async Task<IActionResult> UploadPictures(List<IFormFile> files, PersonForCreationDto person)
+        [HttpPost]
+        public ActionResult<PictureDto> PostPictures(
+            [FromForm] PictureForCreationDto pictures, List<IFormFile> files)
         {
-            //var personEntity = _mapper.Map<Entities.Person>(person);
-            //var personId = personEntity.PersonId;
+            var pictureEntity = _mapper.Map<Entities.Picture>(pictures);
+            _personLibraryRepository.AddPicture(pictures.PersonId, pictureEntity);
+            _personLibraryRepository.Save();
 
-            //if(!_personLibraryRepository.PersonExists(personId))
-            //{
-            //    _personLibraryRepository.AddPerson(personEntity);
+            var picturesToReturn = _mapper.Map<PictureDto>(pictureEntity);
 
-
-            //}
-            //_personLibraryRepository.AddPicture(personEntity.PersonId)
-            //var uploader = new Helpers.Uploader();
-            //var pictureUrl = await uploader.UploadPictures(files);
-
-            //return Ok(new { pictureUrl });
-            //if (!_personLibraryRepository.PersonExists(personId))
-            //{
-            //    return NotFound();
-            //}
-
-
-            long size = files.Sum(f => f.Length);
-
-            var folderName = Path.Combine("Resources", "Images");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-
-           
-
-            var fileName = Guid.NewGuid() + ".jpg";
-            var fullPath = Path.Combine(pathToSave, fileName);
-
-            foreach (var formFile in files)
+            return CreatedAtRoute("GetPictures", new { pictureId = picturesToReturn.PictureId }, picturesToReturn);
+        }
+        [Route("Upload")]
+        [HttpPost, DisableRequestSizeLimit]
+        public async Task<IActionResult> Upload(List<IFormFile> files)
+        {
+            try
             {
-                if (formFile.Length > 0)
-                {
+          
 
-                    using (var stream = System.IO.File.Create(fullPath))
+                long size = files.Sum(f => f.Length);
+
+                var folderName = Path.Combine("Resources", "Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                var fileExtension = Path.GetExtension(files.FirstOrDefault().FileName);
+                var fileName = Guid.NewGuid() + fileExtension;
+                var fullPath = Path.Combine(folderName, fileName);
+
+                foreach (var formFile in files)
+                {
+                    if (formFile.Length > 0)
                     {
-                        await formFile.CopyToAsync(stream);
+
+                        using (var stream = System.IO.File.Create(fullPath))
+                        {
+                            await formFile.CopyToAsync(stream);
+                        }
+                        return Ok(new { fullPath });
+                    }
+                    else
+                    {
+                        return BadRequest();
                     }
                 }
+                return BadRequest();
             }
-
-            return Ok(new { count = files.Count, size, fullPath });
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
     }
 }

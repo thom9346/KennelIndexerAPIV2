@@ -17,7 +17,7 @@ namespace KennelIndexer.API.Services
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public void AddPerson(Person person, List<IFormFile> files)
+        public void AddPerson(Person person, List<string> pictureUrls)
         {
             if (person == null)
             {
@@ -26,20 +26,16 @@ namespace KennelIndexer.API.Services
 
             person.PersonId = Guid.NewGuid(); //API is responsibile for creating new IDS.
 
-            if (files.Count > 0)
+            if (pictureUrls.Count > 0)
             {
-                var uploader = new Helpers.Uploader();
-                var pictureUri = uploader.UploadPictures(files);
-
-                foreach (var file in files)
+                person.Pictures = new List<Picture>();
+                foreach (var file in pictureUrls)
                 {
                     //var personId = Guid.NewGuid();
-                    person.Pictures = new List<Picture>()
-                { new Picture { PersonId = person.PersonId, PictureUri = pictureUri.Result.ToString() } };
-
+                    person.Pictures.Add(new Picture { PersonId = person.PersonId, PictureUri = file });
                 }
-            }
 
+            }
             _context.People.Add(person);
 
         }

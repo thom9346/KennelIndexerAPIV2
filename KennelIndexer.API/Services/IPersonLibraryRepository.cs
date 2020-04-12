@@ -12,7 +12,7 @@ namespace KennelIndexer.API.Services
         IEnumerable<Person> GetPeople();
         Person GetPerson(Guid personId);
         IEnumerable<Person> GetPeople(IEnumerable<Guid> personIds);
-        void AddPerson(Person person, List<IFormFile> files);
+        void AddPerson(Person person, List<string> files);
         void DeletePerson(Person person);
         void UpdatePerson(Person person);
         bool PersonExists(Guid personId);
