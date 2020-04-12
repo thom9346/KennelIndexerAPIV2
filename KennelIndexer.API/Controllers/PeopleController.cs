@@ -58,7 +58,7 @@ namespace KennelIndexer.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, DisableRequestSizeLimit]
         public ActionResult<PersonDto> PostPerson(
             [FromForm] PersonForCreationDto person)
         {
