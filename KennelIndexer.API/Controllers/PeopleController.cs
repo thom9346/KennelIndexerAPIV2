@@ -96,5 +96,20 @@ namespace KennelIndexer.API.Controllers
                 new { personId = personToReturn.PersonId },
                 personToReturn);
         }
+
+        [HttpDelete("{personId}")]
+        public IActionResult DeletePerson(Guid personId)
+        {
+            if(!_personLibraryRepositry.PersonExists(personId))
+            {
+                return NotFound();
+            }
+            var personEntity = _personLibraryRepositry.GetPerson(personId);
+            _personLibraryRepositry.DeletePerson(personEntity);
+            _personLibraryRepositry.Save();
+
+            return NoContent();
+
+        }
     }
 }
