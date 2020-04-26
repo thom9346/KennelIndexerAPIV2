@@ -11,7 +11,8 @@ namespace KennelIndexer.API.Profiles
         public PeopleProfile()
         {
             CreateMap<Entities.Person, Models.PersonDto>();
-            CreateMap<Models.PersonForCreationDto, Entities.Person>(); 
+            CreateMap<Models.PersonForCreationDto, Entities.Person>();
+            CreateMap<Models.PersonDto, Entities.Person>();
         }
     }
 }

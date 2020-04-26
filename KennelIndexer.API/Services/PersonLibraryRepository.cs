@@ -17,7 +17,7 @@ namespace KennelIndexer.API.Services
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public void AddPerson(Person person, List<string> pictureUrls)
+        public void AddPerson(Person person, List<string> pictureUrls = null)
         {
             if (person == null)
             {
@@ -143,7 +143,16 @@ namespace KennelIndexer.API.Services
 
         public void UpdatePerson(Person person)
         {
-            //throw new NotImplementedException();
+
+            if(person == null)
+            {
+                throw new ArgumentNullException(nameof(person));
+            }
+            if (person.PersonId == null || person.PersonId == Guid.Empty)
+            {
+                throw new ArgumentNullException("Id is needed to update a person.");
+            }
+            _context.People.Update(person);
         }
 
         public void UpdatePicture(Picture picture)

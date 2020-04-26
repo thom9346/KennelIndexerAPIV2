@@ -52,7 +52,7 @@ namespace KennelIndexer.API.Controllers
 
                 return Ok(_mapper.Map<PersonDto>(personFromRepo));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
@@ -70,7 +70,7 @@ namespace KennelIndexer.API.Controllers
             {
                 var folderName = Path.Combine("Resources", "Images");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-               
+
 
                 foreach (var file in files)
                 {
@@ -95,6 +95,32 @@ namespace KennelIndexer.API.Controllers
             return CreatedAtRoute("GetPerson",
                 new { personId = personToReturn.PersonId },
                 personToReturn);
+        }
+        [HttpPut("{personId}")]
+        public IActionResult UpdatePerson(PersonDto person)
+        {
+
+            var personFromRepo = _personLibraryRepositry.GetPerson(person.PersonId);
+            if (personFromRepo == null)
+            {
+                var personToAdd = _mapper.Map<Entities.Person>(person);
+
+                _personLibraryRepositry.AddPerson(personToAdd);
+                _personLibraryRepositry.Save();
+
+                var personToReturn = _mapper.Map<PersonDto>(personToAdd);
+
+                return CreatedAtRoute("GetPerson",
+                  new { personId = personToReturn.PersonId },
+                  personToReturn);
+
+            }
+
+            _mapper.Map(person, personFromRepo);
+
+            _personLibraryRepositry.UpdatePerson(personFromRepo);
+            _personLibraryRepositry.Save();
+            return NoContent();
         }
 
         [HttpDelete("{personId}")]
