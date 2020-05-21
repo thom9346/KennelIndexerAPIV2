@@ -32,9 +32,7 @@ namespace KennelIndexer.API.Controllers
         [HttpGet]
         public IActionResult GetPeople()
         {
-            //This is the entity: Person.cs
             var peopleFromRepo = _personLibraryRepositry.GetPeople();
-            //we map it to the model: PersonDto asnd return it.
             return Ok(_mapper.Map<IEnumerable<PersonDto>>(peopleFromRepo));
         }
         [HttpGet("{personId}", Name = "GetPerson")]
@@ -59,8 +57,7 @@ namespace KennelIndexer.API.Controllers
         }
 
         [HttpPost, DisableRequestSizeLimit]
-        public ActionResult<PersonDto> PostPerson(
-            [FromForm] PersonForCreationDto person)
+        public ActionResult<PersonDto> PostPerson([FromForm] PersonForCreationDto person)
         {
 
             var files = Request.Form.Files;
@@ -97,7 +94,7 @@ namespace KennelIndexer.API.Controllers
                 personToReturn);
         }
         [HttpPut("{personId}")]
-        public IActionResult UpdatePerson(PersonDto person)
+        public IActionResult UpdatePerson([FromForm] PersonDto person)
         {
 
             var personFromRepo = _personLibraryRepositry.GetPerson(person.PersonId);

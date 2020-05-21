@@ -49,7 +49,7 @@ namespace KennelIndexer.API.Migrations
             migrationBuilder.InsertData(
                 table: "People",
                 columns: new[] { "PersonId", "Address", "FirstName", "LastName", "ReasonsForBeingOnTheList" },
-                values: new object[] { new Guid("05c6c2ab-c63b-4c78-818f-39565d57acf5"), "Lollevej 22", "Nig", "Bommer", "Han var pyskopat..." });
+                values: new object[] { new Guid("05c6c2ab-c63b-4c78-818f-39565d57acf5"), "Lollevej 22", "John", "Bommer", "Han var pyskopat..." });
 
             migrationBuilder.InsertData(
                 table: "Pictures",

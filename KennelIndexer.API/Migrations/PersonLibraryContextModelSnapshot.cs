@@ -49,16 +49,16 @@ namespace KennelIndexer.API.Migrations
                         new
                         {
                             PersonId = new Guid("05c6c2ab-c63b-4c78-818f-39565d57bcf5"),
-                            FirstName = "Thomas",
-                            LastName = "Holmegaard"
+                            FirstName = "Homie",
+                            LastName = "Carl"
                         },
                         new
                         {
                             PersonId = new Guid("05c6c2ab-c63b-4c78-818f-39565d57acf5"),
                             Address = "Lollevej 22",
-                            FirstName = "Nig",
+                            FirstName = "Bruh",
                             LastName = "Bommer",
-                            ReasonsForBeingOnTheList = "Han var pyskopat..."
+                            ReasonsForBeingOnTheList = "He was a psycho..."
                         });
                 });
 
