@@ -1,8 +1,8 @@
 # Kennel Indexer API
-This is the API portion of a web-application that allows for basic CRUD operations using entity framework with a code-first approach. 
+This is the API portion of a web application that allows for basic CRUD operations using entity framework with a code-first approach
 
 # How To use 
-1. create a file caled `appsettings.json` in the root directory.
+1. Create a file called `appsettings.json` in the KennelIndexer.API directory.
 In this file, use following template and use a connection string to a SQL database:
 
 ```
