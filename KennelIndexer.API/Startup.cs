@@ -50,7 +50,7 @@ namespace KennelIndexer.API
             {
                 //(local)\sqlexpress <- laptop
                 //(localdb)\mssqllocaldb <- stationairy
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=KennelIndexerApiV2;Trusted_Connection=True;");
+                options.UseSqlServer(Configuration.GetConnectionString("MainDB"));
             });
         }
 

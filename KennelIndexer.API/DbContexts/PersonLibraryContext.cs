@@ -20,16 +20,16 @@ namespace KennelIndexer.API.DbContexts
                 new Person()
                 {
                     PersonId = Guid.Parse("05C6C2AB-C63B-4C78-818F-39565D57BCF5"),
-                    FirstName = "Thomas",
-                    LastName = "Holmegaard"
+                    FirstName = "Bob",
+                    LastName = "The builder"
                 },
                 new Person()
                 {
                     PersonId = Guid.Parse("05C6C2AB-C63B-4C78-818F-39565D57ACF5"),
-                    FirstName = "Nig",
-                    LastName = "Bommer",
-                    Address = "Lollevej 22",
-                    ReasonsForBeingOnTheList = "Han var pyskopat..."
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Address = "Lygten 31",
+                    ReasonsForBeingOnTheList = "Confirmed cases of animal abuse"
 
                 }
                 );
@@ -38,7 +38,7 @@ namespace KennelIndexer.API.DbContexts
                 new Picture
                 {
                     PictureId = Guid.Parse("C54F132B-79AA-4986-AAB4-B0DA907CE843"),
-                    PictureUri = "located/somewhere/lol.png",
+                    PictureUri = "Resources/Images/256cbcfc-c699-48fa-9a87-edf1b8b71f6f.jpg",
                     PersonId = Guid.Parse("05C6C2AB-C63B-4C78-818F-39565D57BCF5")
                 });
 
