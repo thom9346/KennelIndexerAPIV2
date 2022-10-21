@@ -320,7 +320,7 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 #images
-/KennelIndexer.API/Resources/Images
+/!KennelIndexer.API/!Resources/!Images/*
 # OpenCover UI analysis results
 OpenCover/
 
